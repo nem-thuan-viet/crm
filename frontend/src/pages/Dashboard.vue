@@ -145,7 +145,17 @@ import LayoutHeader from '@/components/LayoutHeader.vue'
 import Link from '@/components/Controls/Link.vue'
 import { usersStore } from '@/stores/users'
 import { copy } from '@/utils'
-import { getLastXDays, formatter, formatRange } from '@/utils/dashboard'
+import {
+  getLastXDays,
+  formatter,
+  formatRange,
+  getToday,
+  getYesterday,
+  getThisWeek,
+  getThisMonth,
+  getLastMonth,
+  getThisYear,
+} from '@/utils/dashboard'
 import {
   usePageMeta,
   createResource,
@@ -168,6 +178,13 @@ const filters = reactive({
   period: getLastXDays(),
   user: null,
 })
+
+// NTV: gom 3 dòng lặp lại của mỗi mốc bấm nhanh về một chỗ.
+function setPreset(label, range) {
+  preset.value = label
+  filters.period = range
+  dashboardItems.reload()
+}
 
 const fromDate = computed(() => {
   if (!filters.period) return null
@@ -221,6 +238,32 @@ const options = computed(() => [
           filters.period = getLastXDays(90)
           dashboardItems.reload()
         },
+      },
+      // NTV: 6 mốc bấm nhanh. Trước đây muốn xem "tháng này" phải mở Custom Range
+      // rồi gõ tay 2 đầu ngày — việc lặp mỗi sáng.
+      {
+        label: __('Today'),
+        onClick: () => setPreset('Today', getToday()),
+      },
+      {
+        label: __('Yesterday'),
+        onClick: () => setPreset('Yesterday', getYesterday()),
+      },
+      {
+        label: __('This Week'),
+        onClick: () => setPreset('This Week', getThisWeek()),
+      },
+      {
+        label: __('This Month'),
+        onClick: () => setPreset('This Month', getThisMonth()),
+      },
+      {
+        label: __('Last Month'),
+        onClick: () => setPreset('Last Month', getLastMonth()),
+      },
+      {
+        label: __('This Year'),
+        onClick: () => setPreset('This Year', getThisYear()),
       },
     ],
   },

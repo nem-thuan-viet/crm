@@ -135,6 +135,44 @@ def get_total_leads(from_date: str | None = None, to_date: str | None = None, us
 	}
 
 
+def get_unattended_leads(from_date: str | None = None, to_date: str | None = None, user: str | None = None):
+	"""Leads that have arrived but nobody has touched yet.
+
+	This is an "as of now" number, so it deliberately ignores from_date/to_date: a lead that
+	came in last month and is still untouched is today's problem, not last month's.
+
+	Matches on status *type*, never on status name — status names are renamed in practice
+	(the default "New" becomes a local-language label), and hardcoding a name makes this
+	tile silently drop to 0 while still looking healthy.
+
+	`delta` carries the age in days of the oldest untouched lead, because the count alone
+	cannot tell you whether to act: 90 leads that all arrived this morning is normal,
+	90 leads whose oldest has been sitting for a week is lost business.
+	"""
+	open_statuses = frappe.get_all("CRM Lead Status", filters={"type": "Open"}, pluck="name")
+	if not open_statuses:
+		return {
+			"title": _("Unattended leads"),
+			"tooltip": _("No lead status of type Open is defined"),
+			"value": 0,
+		}
+
+	filters = {"status": ["in", open_statuses], "converted": 0}
+	if user:
+		filters["lead_owner"] = user
+
+	rows = frappe.get_all("CRM Lead", filters=filters, fields=["creation"], order_by="creation asc")
+	oldest_days = frappe.utils.date_diff(frappe.utils.nowdate(), rows[0].creation) if rows else 0
+
+	return {
+		"title": _("Unattended leads"),
+		"tooltip": _("Leads still in an Open status that were never converted"),
+		"value": len(rows),
+		"delta": oldest_days,
+		"deltaSuffix": _(" days (oldest)"),
+	}
+
+
 def get_ongoing_deals(from_date: str | None = None, to_date: str | None = None, user: str | None = None):
 	"""
 	Get ongoing deal count for the dashboard, and also calculate average deal value for ongoing deals.

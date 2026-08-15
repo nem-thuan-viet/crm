@@ -119,7 +119,11 @@
                           :disabled="Boolean(field.read_only)"
                           @update:modelValue="(v) => checkChange(v, field)"
                         />
-                        <Textarea
+                        <!-- NTV: ô văn bản kèm nút xoá. Không có nút này thì con trỏ rơi
+                             vào GIỮA đoạn cũ, gõ tiếp là chèn vào giữa rồi lưu im lặng —
+                             ra một bản ghi đọc như thật mà sai. Đã cắn thật khi dùng ô
+                             "tóm tắt lần gọi" (ô thiết kế để ghi đè mỗi lần gọi). -->
+                        <div
                           v-else-if="
                             [
                               'Small Text',
@@ -128,12 +132,27 @@
                               'Code',
                             ].includes(field.fieldtype)
                           "
-                          class="form-control"
-                          variant="ghost"
-                          :modelValue="doc[field.fieldname]"
-                          :placeholder="field.placeholder"
-                          @change.stop="fieldChange($event.target.value, field)"
-                        />
+                          class="group relative w-full"
+                        >
+                          <Textarea
+                            class="form-control"
+                            variant="ghost"
+                            :modelValue="doc[field.fieldname]"
+                            :placeholder="field.placeholder"
+                            @change.stop="
+                              fieldChange($event.target.value, field)
+                            "
+                          />
+                          <button
+                            v-if="doc[field.fieldname] && !field.read_only"
+                            class="absolute right-1 top-1 hidden rounded p-1 text-ink-gray-5 hover:bg-surface-gray-3 hover:text-ink-gray-7 group-hover:block"
+                            :title="__('Clear')"
+                            :aria-label="__('Clear')"
+                            @click.stop="fieldChange('', field)"
+                          >
+                            <LucideX class="size-3" />
+                          </button>
+                        </div>
                         <Select
                           v-else-if="field.fieldtype === 'Select'"
                           class="form-control select-control cursor-pointer truncate"

@@ -224,7 +224,8 @@ function showTask(name) {
     name,
     doctype: 'CRM Task',
     title: 'Task',
-    defaults: { status: 'Backlog', priority: 'Low' },
+    // NTV: bỏ status/priority đóng cứng — để mặc định của DocType quyết (xem Tasks.vue).
+    defaults: {},
     callbacks: {
       afterInsert: (d) => addTaskToCallLog(d, true),
       afterUpdate: (d) => addTaskToCallLog(d, false),

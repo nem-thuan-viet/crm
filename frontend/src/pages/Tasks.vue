@@ -340,7 +340,10 @@ function showTask(name) {
 }
 
 function createTask(column) {
-  const defaults = { status: 'Backlog', priority: 'Low' }
+  // NTV: KHÔNG đóng cứng status/priority ở đây nữa. Đóng cứng thì mặc định khai trên
+  // DocType (Property Setter) bị đè, admin sửa cấu hình mà màn hình không đổi — hỏng
+  // kiểu im lặng. Để trống thì server tự điền theo mặc định của chính DocType.
+  const defaults = {}
 
   if (column?.column?.name) {
     let column_field = tasks.value.params.column_field
