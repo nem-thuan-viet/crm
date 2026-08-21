@@ -41,7 +41,7 @@
       type="text"
       :placeholder="getPlaceholder(field)"
       :disabled="true"
-      :description="field.description"
+      :description="__(field.description)"
     />
     <Grid
       v-else-if="field.fieldtype === 'Table'"
@@ -59,7 +59,7 @@
       :class="field.prefix ? 'prefix' : ''"
       :options="field.options"
       :placeholder="getPlaceholder(field)"
-      :description="field.description"
+      :description="__(field.description)"
       @update:modelValue="(e) => fieldChange(e, field)"
     >
       <template v-if="field.prefix" #prefix>
@@ -72,7 +72,7 @@
         class="form-control"
         type="checkbox"
         :disabled="Boolean(field.read_only)"
-        :description="field.description"
+        :description="__(field.description)"
         @change="(e) => fieldChange(e.target.checked, field)"
       />
       <label
@@ -188,14 +188,14 @@
       type="textarea"
       :value="data[field.fieldname]"
       :placeholder="getPlaceholder(field)"
-      :description="field.description"
+      :description="__(field.description)"
       @change="fieldChange($event.target.value, field)"
     />
     <Password
       v-else-if="field.fieldtype === 'Password'"
       :value="data[field.fieldname]"
       :placeholder="getPlaceholder(field)"
-      :description="field.description"
+      :description="__(field.description)"
       @change="fieldChange($event.target.value, field)"
     />
     <FormattedInput
@@ -204,7 +204,7 @@
       :placeholder="getPlaceholder(field)"
       :value="data[field.fieldname] || '0'"
       :disabled="Boolean(field.read_only)"
-      :description="field.description"
+      :description="__(field.description)"
       @change="fieldChange($event.target.value, field)"
     />
     <FormattedInput
@@ -213,7 +213,7 @@
       :value="getFormattedPercent(field.fieldname, data)"
       :placeholder="getPlaceholder(field)"
       :disabled="Boolean(field.read_only)"
-      :description="field.description"
+      :description="__(field.description)"
       @change="fieldChange(flt($event.target.value), field)"
     />
     <FormattedInput
@@ -222,7 +222,7 @@
       :value="getFormattedFloat(field.fieldname, data)"
       :placeholder="getPlaceholder(field)"
       :disabled="Boolean(field.read_only)"
-      :description="field.description"
+      :description="__(field.description)"
       @change="fieldChange(flt($event.target.value), field)"
     />
     <FormattedInput
@@ -231,7 +231,7 @@
       :value="getFormattedCurrency(field.fieldname, data, parentDoc)"
       :placeholder="getPlaceholder(field)"
       :disabled="Boolean(field.read_only)"
-      :description="field.description"
+      :description="__(field.description)"
       @change="fieldChange(flt($event.target.value), field)"
     />
     <DurationInput
@@ -239,7 +239,7 @@
       :value="data[field.fieldname]"
       :placeholder="getPlaceholder(field)"
       :disabled="Boolean(field.read_only)"
-      :description="field.description"
+      :description="__(field.description)"
       @change="(v) => fieldChange(v, field)"
     />
     <RatingInput
@@ -282,15 +282,22 @@
       :disabled="Boolean(field.read_only)"
       @change="(v) => fieldChange(v, field)"
     />
-    <FormControl
-      v-else
-      type="text"
-      :placeholder="getPlaceholder(field)"
-      :value="data[field.fieldname]"
-      :disabled="Boolean(field.read_only)"
-      :description="field.description"
-      @change="fieldChange($event.target.value, field)"
-    />
+    <div v-else class="flex items-center gap-1">
+      <FormControl
+        class="flex-1"
+        type="text"
+        :placeholder="getPlaceholder(field)"
+        :value="data[field.fieldname]"
+        :disabled="Boolean(field.read_only)"
+        :description="__(field.description)"
+        @change="fieldChange($event.target.value, field)"
+      />
+      <ArrowUpRightIcon
+        v-if="isExternalUrl(data[field.fieldname])"
+        class="h-4 w-4 shrink-0 cursor-pointer text-ink-gray-5 hover:text-ink-gray-8"
+        @click.stop="openExternalUrl(data[field.fieldname])"
+      />
+    </div>
   </div>
 </template>
 <script setup>
@@ -307,6 +314,7 @@ import ButtonControl, {
   getButtonVariant,
 } from '@/components/Controls/ButtonControl.vue'
 import EditIcon from '@/components/Icons/EditIcon.vue'
+import ArrowUpRightIcon from '@/components/Icons/ArrowUpRightIcon.vue'
 import IndicatorIcon from '@/components/Icons/IndicatorIcon.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import TableMultiselectInput from '@/components/Controls/TableMultiselectInput.vue'
@@ -586,6 +594,14 @@ const getOptions = (options) => {
   } else {
     return []
   }
+}
+
+function isExternalUrl(value) {
+  return typeof value === 'string' && /^https?:\/\//i.test(value.trim())
+}
+
+function openExternalUrl(value) {
+  window.open(value.trim(), '_blank', 'noopener,noreferrer')
 }
 
 async function handleButtonClick(field) {

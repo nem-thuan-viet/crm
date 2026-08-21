@@ -29,3 +29,114 @@
 .menu-content {
   z-index: 101;
 }
+
+/* ===== NTV THEME — trung tính, hồng chỉ ở điểm nhấn =====
+   Đổi hướng ngày 08/08/2026 (Công chốt): trước đây hồng phủ cả sidebar + thanh
+   tiêu đề bằng gradient, làm màu thương hiệu kiêm luôn màu nền — không còn kênh
+   nào để hét lên khi có việc gấp, và nhìn nặng hơn hẳn các CRM cùng loại.
+   Nay: nền/sidebar/thanh trên đều trắng; hồng giữ lại ĐÚNG ba chỗ mang nghĩa
+   "đang ở đây" hoặc "bấm vào đây": mục đang chọn, nút chính, huy hiệu. */
+:root{
+  /* Ba nấc hồng — LẤY ĐÚNG BỘ NHẬN DIỆN (nem-thuan-viet-brand, sửa 12/08/2026).
+     Trước đây ba nấc là #eb2365 / #d11f59 / #b81a4f: nấc đầu lệch 1 đơn vị so với
+     brand, hai nấc sau là màu tự chế không có trong bảng. Nay:
+       Pink        #EB2364  (chủ đạo)
+       Pink đậm    #B51247
+       Dark Pink   #590F22  (dùng cho chữ huy hiệu, xem cuối file)
+     Nấc giữa #D51C58 KHÔNG phải màu brand mà là phái sinh bắt buộc: đo được
+     #EB2364 + chữ trắng chỉ đạt tương phản 4.24 (AA cần 4.5) nên không dùng làm
+     nền nút được; #D51C58 đạt 5.08, cùng tông, và đã có sẵn trong bộ token nền
+     (`--pink-nut`). Đừng "sửa lại cho đúng brand" thành #EB2364 — là hạ chuẩn đọc. */
+  --surface-gray-10:#EB2364; --surface-gray-9:#D51C58; --surface-gray-8:#B51247;
+  --surface-base:#ffffff; --surface-gray-1:#fbfbfc;
+
+  /* Hai nấc chữ phụ của frappe-ui quá nhạt trên nền kem: đo ngày 08/08/2026 được
+     55 chỗ dưới chuẩn AA (ink-gray-5 tỷ lệ 3.76 · ink-gray-4 tỷ lệ 2.57, cần 4.5).
+     Không phải 55 lỗi riêng lẻ — chỉ là 2 token. Hạ độ sáng oklch cho đạt chuẩn,
+     vẫn giữ chênh lệch giữa 2 nấc để không mất phân tầng chữ chính / chữ phụ. */
+  --ink-gray-4:oklch(.52 0 0);
+  --ink-gray-5:oklch(.47 0 0);
+}
+/* Thanh tiêu đề trên: trắng, chữ đen, phân cách bằng đường kẻ chứ không bằng khối màu */
+.overflow-auto.bg-surface-base>:first-child{background:#fff!important;padding-left:14px;border-bottom:1px solid #e8e8ea!important;}
+.overflow-auto.bg-surface-base>:first-child *{color:#1f2937!important;}
+/* Nút phụ trong thanh: trong suốt. Nhưng nút CHÍNH (variant solid, mang lớp
+   bg-surface-gray-10/9) phải giữ hồng đậm + chữ trắng — đây là chỗ hồng thứ hai
+   được phép xuất hiện, vì nó nói "bấm vào đây". Vẫn dùng mẹo khoảng-trắng-đứng-trước
+   để không khớp biến thể `hover:bg-surface-gray-9`. */
+.overflow-auto.bg-surface-base>:first-child button:not([class^="bg-surface-gray-10"]):not([class*=" bg-surface-gray-10"]):not([class^="bg-surface-gray-9"]):not([class*=" bg-surface-gray-9"]){background:transparent!important;}
+.overflow-auto.bg-surface-base>:first-child button[class^="bg-surface-gray-10"],
+.overflow-auto.bg-surface-base>:first-child button[class*=" bg-surface-gray-10"],
+.overflow-auto.bg-surface-base>:first-child button[class^="bg-surface-gray-9"],
+.overflow-auto.bg-surface-base>:first-child button[class*=" bg-surface-gray-9"]{background:#D51C58!important;}
+.overflow-auto.bg-surface-base>:first-child button[class^="bg-surface-gray-10"],
+.overflow-auto.bg-surface-base>:first-child button[class*=" bg-surface-gray-10"],
+.overflow-auto.bg-surface-base>:first-child button[class^="bg-surface-gray-9"],
+.overflow-auto.bg-surface-base>:first-child button[class*=" bg-surface-gray-9"],
+.overflow-auto.bg-surface-base>:first-child button[class^="bg-surface-gray-10"] *,
+.overflow-auto.bg-surface-base>:first-child button[class*=" bg-surface-gray-10"] *,
+.overflow-auto.bg-surface-base>:first-child button[class^="bg-surface-gray-9"] *,
+.overflow-auto.bg-surface-base>:first-child button[class*=" bg-surface-gray-9"] *{color:#fff!important;}
+.overflow-auto.bg-surface-base>:first-child button[class^="bg-surface-gray-10"] svg,
+.overflow-auto.bg-surface-base>:first-child button[class*=" bg-surface-gray-10"] svg{stroke:#fff!important;}
+
+/* Ô logo Frappe CRM ở đầu sidebar: app gốc hardcode magenta #EF0BF5 — màu chói,
+   không thuộc bảng nhận diện, mà lại nằm ngay góc trên cùng nên mắt gặp đầu tiên.
+   `fill` ở đây là ATTRIBUTE trong SVG, không phải thuộc tính CSS, nên phải đè bằng
+   bộ chọn thuộc tính (thêm cờ `i` để không kẹt hoa/thường). Đổi về Pink brand.
+   ⚠️ Đây là đổi màu ô logo CỦA APP FRAPPE, không phải logo Nệm Thuần Việt — bộ
+   nhận diện cấm đổi màu logo chim Lạc, còn logo app gốc thì không thuộc brand.
+   Muốn thay hẳn sang logo NTV thì phải sửa component Vue, không làm bằng CSS. */
+svg path[fill="#EF0BF5" i]{ fill:#EB2364!important; }
+
+/* ===== Sidebar trắng ===== */
+.isolate > .border-r.bg-surface-gray-1{background:#fbfbfc!important;border-right:1px solid #e8e8ea!important;}
+.isolate > .border-r.bg-surface-gray-1 *{color:#1f2937!important;}
+.isolate > .border-r.bg-surface-gray-1 svg{stroke:#4b5563!important;}
+.isolate > .border-r.bg-surface-gray-1 [class*="hover:bg"]:hover{background:#f1f1f3!important;}
+
+/* Mục đang chọn — CHỖ DUY NHẤT hồng trong sidebar, để mắt biết mình đang đứng đâu */
+.isolate > .border-r.bg-surface-gray-1 .bg-surface-elevation-3{background:#FDEDF3!important;box-shadow:none!important;}
+.isolate > .border-r.bg-surface-gray-1 .bg-surface-elevation-3,
+.isolate > .border-r.bg-surface-gray-1 .bg-surface-elevation-3 *{color:#B51247!important;}
+.isolate > .border-r.bg-surface-gray-1 .bg-surface-elevation-3 svg{stroke:#B51247!important;}
+
+/* Trường tiền trên thẻ Kanban: đậm hơn, to hơn một nấc so với các trường phụ.
+   Học từ cách Base bày thẻ — mỗi thẻ chỉ nên có ĐÚNG MỘT thứ nổi lên. */
+.ntv-tien, .ntv-tien *{
+  font-weight:600!important;
+  font-size:.9375rem!important;
+  color:oklch(.205 0 0)!important;
+}
+/* Căn phải để đuôi các con số thẳng một cột — quét dọc là so sánh được ngay,
+   không phải đọc từng số. Base gộp tiền cùng hàng với avatar nên không có khoảng
+   trống; mình không gộp vì phải nhắm theo vị trí trường (nth-child), đổi thứ tự
+   trong Cài đặt kanban là vỡ. */
+.ntv-tien{ text-align:right!important; }
+.ntv-tien > *{ justify-content:flex-end!important; }
+
+/* ẩn banner onboarding sidebar */
+.isolate > .border-r.bg-surface-gray-1 .m-2.flex.flex-col.gap-1{display:none!important;}
+
+/* Huy hiệu số thông báo trong sidebar. Lịch sử: hồi sidebar còn gradient hồng, luật
+   `* {color:#fff}` ép chữ trắng lên nền xám sáng -> tương phản 1.11, số tàng hình.
+   Nay sidebar đã trắng nên lỗi đó không còn, nhưng để nền trắng thì huy hiệu chìm
+   vào sidebar. Cho nền hồng nhạt + chữ maroon: vừa nổi, vừa là một trong ba chỗ
+   hồng được phép xuất hiện.
+   Chỉ nhắm ĐÚNG huy hiệu: phải vừa bo tròn hoàn toàn vừa mang nền xám.
+   Lưu ý bộ chọn: `[class*="bg-surface-gray-2"]` khớp luôn cả tên lớp
+   `hover:bg-surface-gray-2` của các mục menu -> cả sidebar hoá thanh trắng.
+   Dùng `[class^=]` và `[class*=" …"]` (có khoảng trắng đứng trước) để chỉ khớp
+   tên lớp thật, không khớp biến thể có tiền tố `hover:`/`focus:`. */
+.isolate > .border-r.bg-surface-gray-1 [class*="rounded-full"][class^="bg-surface-gray-2"],
+.isolate > .border-r.bg-surface-gray-1 [class*="rounded-full"][class*=" bg-surface-gray-2"],
+.isolate > .border-r.bg-surface-gray-1 [class*="rounded-full"][class^="bg-surface-gray-3"],
+.isolate > .border-r.bg-surface-gray-1 [class*="rounded-full"][class*=" bg-surface-gray-3"]{
+  background:#FDEDF3!important;
+}
+.isolate > .border-r.bg-surface-gray-1 [class*="rounded-full"][class^="bg-surface-gray-2"],
+.isolate > .border-r.bg-surface-gray-1 [class*="rounded-full"][class*=" bg-surface-gray-2"],
+.isolate > .border-r.bg-surface-gray-1 [class*="rounded-full"][class^="bg-surface-gray-3"],
+.isolate > .border-r.bg-surface-gray-1 [class*="rounded-full"][class*=" bg-surface-gray-3"]{
+  color:#590F22!important;
+}
