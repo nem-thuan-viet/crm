@@ -3502,11 +3502,11 @@ msgstr "Hoàn thành"
 #: frontend/src/components/SortBy.vue:102
 #: frontend/src/components/SortBy.vue:136
 msgid "First Name"
-msgstr "Họ và tên"
+msgstr "Tên"
 
 #: frontend/src/components/Modals/LeadModal.vue:129
 msgid "First Name is mandatory"
-msgstr "Họ tên là bắt buộc"
+msgstr "Tên là bắt buộc"
 
 #. Label of the first_responded_on (Datetime) field in DocType 'CRM Deal'
 #. Label of the first_responded_on (Datetime) field in DocType 'CRM Lead'
@@ -3540,7 +3540,7 @@ msgstr "Thời gian phản hồi đầu tiên"
 #. Label of the first_name (Data) field in DocType 'CRM Deal'
 #: crm/fcrm/doctype/crm_deal/crm_deal.json
 msgid "First name"
-msgstr "Họ tên"
+msgstr "Tên"
 
 #: frontend/src/components/Settings/DefaultsSettings.vue:92
 msgid "Float Precision"
@@ -4329,7 +4329,7 @@ msgstr "Tháng trước"
 #. Label of the last_name (Data) field in DocType 'CRM Lead'
 #: crm/fcrm/doctype/crm_lead/crm_lead.json
 msgid "Last Name"
-msgstr "Tên"
+msgstr "Họ"
 
 #: frontend/src/components/Filter.vue:657
 msgid "Last Quarter"
@@ -6891,7 +6891,7 @@ msgstr "Đặt Mức ưu tiên Mặc định"
 
 #: frontend/src/pages/Lead.vue:119
 msgid "Set First Name"
-msgstr "Đặt Họ Tên"
+msgstr "Đặt tên"
 
 #: frontend/src/components/Controls/GeolocationControl.vue:50
 msgid "Set Location"
