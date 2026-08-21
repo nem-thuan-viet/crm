@@ -23,6 +23,13 @@
   }
 }
 
+/* Reka menu content (e.g. the kebab menu inside PrimaryDropdown) portals to
+   <body> without a z-index, so it falls behind frappe-ui Popover content
+   (z-[100]). Lift menus above popovers so nested menus stay visible. */
+.menu-content {
+  z-index: 101;
+}
+
 /* ===== NTV THEME — trung tính, hồng chỉ ở điểm nhấn =====
    Đổi hướng ngày 08/08/2026 (Công chốt): trước đây hồng phủ cả sidebar + thanh
    tiêu đề bằng gradient, làm màu thương hiệu kiêm luôn màu nền — không còn kênh

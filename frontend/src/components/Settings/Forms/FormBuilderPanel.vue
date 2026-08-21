@@ -1,14 +1,14 @@
 <template>
   <div class="flex h-full flex-col text-ink-gray-8">
     <!-- header -->
-    <div class="flex items-center justify-between border-b px-6 py-3">
+    <div class="flex items-center justify-between px-6 pt-8 pb-4">
       <div class="flex items-center gap-2">
         <Button
           variant="ghost"
           icon-left="lucide-chevron-left"
           :label="form.title || __('Untitled')"
           size="md"
-          class="-ml-4 cursor-pointer !max-w-96 !justify-start !pr-0 text-2xl-semibold no-underline hover:bg-transparent hover:no-underline hover:opacity-70 focus:bg-transparent focus:outline-none focus:ring-0"
+          class="-ml-4 cursor-pointer !max-w-96 !justify-start !pr-0 text-lg-semibold text-ink-gray-7 no-underline hover:bg-transparent hover:no-underline hover:opacity-70 focus:bg-transparent focus:outline-none focus:ring-0"
           @click="goBack"
         />
         <Badge
@@ -49,7 +49,7 @@
 
     <div v-if="loaded" class="flex-1 overflow-y-auto px-6 pb-6">
       <!-- EDIT MODE -->
-      <div v-if="mode === 'edit'" class="wf-tabs mx-auto max-w-2xl">
+      <div v-if="mode === 'edit'" class="wf-tabs">
         <Tabs v-model="tabIndex" as="div" :tabs="tabs">
           <template #tab-panel="{ tab }">
             <!-- EDITOR TAB -->
@@ -154,14 +154,14 @@
                         <div
                           v-for="col in sec.columns"
                           :key="columnKey(col)"
-                          class="flex flex-1 flex-col gap-1.5 rounded border border-dashed border-outline-gray-2 bg-surface-elevation-2 p-2"
+                          class="flex min-w-0 flex-1 flex-col gap-1.5 rounded border border-dashed border-outline-gray-2 bg-surface-elevation-2 p-2"
                         >
                           <Draggable
                             :list="col.items"
                             group="wf-fields"
                             item-key="fieldname"
                             handle=".drag-handle"
-                            class="flex min-h-[34px] flex-1 flex-col gap-1.5"
+                            class="flex min-h-[34px] min-w-0 flex-1 flex-col gap-1.5"
                             ghost-class="opacity-40"
                             :force-fallback="true"
                             :fallback-on-body="false"
@@ -175,29 +175,37 @@
                                 :field="f"
                                 :expanded="expanded === f.fieldname"
                                 :locked="isMandatory(f.fieldname)"
+                                :guest-select-missing="
+                                  f.fieldtype === 'Link' &&
+                                  guestSelect[f.options] === false
+                                "
+                                :granting="!!grantingSelect[f.options]"
                                 @open="open(f)"
                                 @toggle="toggle(f)"
                                 @remove="removeField(f)"
                                 @update="(patch) => updateField(f, patch)"
+                                @grant-guest="grantGuestSelect(f.options)"
                               />
                             </template>
                           </Draggable>
-                          <Autocomplete
+                          <Combobox
                             :options="availableFieldOptions"
-                            value=""
+                            :model-value="null"
                             :placeholder="__('Search fields…')"
-                            @change="(e) => addFieldToColumn(col, e)"
+                            @update:selected-option="
+                              (e) => addFieldToColumn(col, e)
+                            "
                           >
-                            <template #target="{ togglePopover }">
+                            <template #trigger="{ open, setOpen }">
                               <Button
                                 class="!h-8 w-full !bg-surface-elevation-2"
                                 variant="outline"
                                 :label="__('Add Field')"
                                 icon-left="plus"
-                                @click="togglePopover()"
+                                @click="openFieldPicker(open, setOpen)"
                               />
                             </template>
-                          </Autocomplete>
+                          </Combobox>
                         </div>
                       </div>
                     </div>
@@ -301,7 +309,7 @@
                         {{ __('Route') }}
                       </div>
                       <div
-                        class="flex h-7 cursor-text items-center rounded border border-transparent bg-surface-gray-2 px-2.5 text-base transition-colors hover:bg-surface-gray-3 focus-within:border-outline-gray-4 focus-within:bg-surface-base focus-within:shadow-sm"
+                        class="flex h-7 cursor-text items-center rounded border border-transparent bg-surface-gray-2 px-2.5 text-base transition-colors hover:bg-surface-gray-3 focus-within:border-outline-gray-4 focus-within:bg-surface-base"
                         @click="focusRouteEnd"
                       >
                         <span class="shrink-0 text-ink-gray-4">/crm-form/</span>
@@ -329,7 +337,7 @@
                     v-model="form.success_message"
                     type="textarea"
                     :label="__('Success message')"
-                    :rows="2"
+                    :rows="4"
                     :placeholder="__('Shown after a successful submission')"
                     @input="markDirty"
                   />
@@ -384,7 +392,10 @@
                       <button
                         class="flex text-ink-gray-5 transition-colors hover:text-ink-gray-8"
                         :title="__('Copy link')"
-                        @click="copyToClipboard(publicUrl)"
+                        @click="
+                          copyToClipboard(publicUrl),
+                            capture('form_embed_copied', { embed_type: 'link' })
+                        "
                       >
                         <LucideCopy class="h-4 w-4" />
                       </button>
@@ -430,13 +441,18 @@
                       <textarea
                         readonly
                         rows="3"
-                        class="w-full resize-none rounded-md border border-outline-gray-2 bg-surface-gray-1 py-2 pl-3 pr-10 font-mono text-xs text-ink-gray-7 focus:border-outline-gray-4 focus:shadow-sm focus:outline-none focus:ring-0 focus-visible:outline-none"
+                        class="w-full resize-none rounded-md border border-outline-gray-2 bg-surface-gray-1 py-2 pl-3 pr-10 font-mono text-xs text-ink-gray-7 focus:border-outline-gray-4 focus:outline-none focus:ring-0 focus-visible:outline-none"
                         :value="iframeSnippet"
                       />
                       <button
                         class="absolute right-2 top-2 flex text-ink-gray-5 transition-colors hover:text-ink-gray-8"
                         :title="__('Copy')"
-                        @click="copyToClipboard(iframeSnippet)"
+                        @click="
+                          copyToClipboard(iframeSnippet),
+                            capture('form_embed_copied', {
+                              embed_type: 'iframe',
+                            })
+                        "
                       >
                         <LucideCopy class="h-4 w-4" />
                       </button>
@@ -466,7 +482,7 @@
                   rows="3"
                   spellcheck="false"
                   placeholder="https://www.example.com"
-                  class="mt-3.5 w-full resize-none rounded-md border border-outline-gray-2 px-3 py-2 font-mono text-xs text-ink-gray-8 focus:border-outline-gray-4 focus:shadow-sm focus:outline-none focus:ring-0 focus-visible:outline-none"
+                  class="mt-3.5 w-full resize-none rounded-md border border-outline-gray-2 px-3 py-2 font-mono text-xs text-ink-gray-8 focus:border-outline-gray-4 focus:outline-none focus:ring-0 focus-visible:outline-none"
                   @input="markDirty"
                 />
                 <p
@@ -496,7 +512,7 @@
       </div>
 
       <!-- PREVIEW MODE -->
-      <div v-else class="mx-auto max-w-2xl pt-6">
+      <div v-else class="max-w-2xl pt-6">
         <div class="rounded-xl border bg-surface-white p-7">
           <!-- simulated success screen -->
           <div
@@ -515,10 +531,14 @@
           </div>
 
           <template v-else>
-            <div class="text-lg font-semibold text-ink-gray-9">
+            <!-- mirror the public page (crm_form.html): 20px title, ~14px gap -->
+            <div class="text-xl font-semibold text-ink-gray-9">
               {{ form.title || __('Form title') }}
             </div>
-            <div v-if="form.description" class="mt-1 text-sm text-ink-gray-6">
+            <div
+              v-if="form.description"
+              class="mt-3.5 whitespace-pre-wrap text-sm text-ink-gray-6"
+            >
               {{ form.description }}
             </div>
             <div class="mt-5 flex flex-col gap-5">
@@ -540,19 +560,26 @@
                     :key="ci"
                     class="flex flex-col gap-4"
                   >
-                    <div v-for="f in col" :key="f.fieldname">
+                    <div
+                      v-show="fieldVisible(f)"
+                      v-for="f in col"
+                      :key="f.fieldname"
+                    >
                       <div
                         v-if="f.fieldtype !== 'Check'"
                         class="mb-1.5 text-sm text-ink-gray-5"
                       >
                         {{ f.label
-                        }}<span v-if="f.reqd" class="text-ink-red-5">*</span>
+                        }}<span v-if="fieldRequired(f)" class="text-ink-red-5"
+                          >*</span
+                        >
                       </div>
                       <FormControl
                         v-if="TEXTAREA_TYPES.includes(f.fieldtype)"
                         v-model="previewModel[f.fieldname]"
                         type="textarea"
                         :placeholder="f.placeholder"
+                        :disabled="fieldReadOnly(f)"
                       />
                       <FormControl
                         v-else-if="f.fieldtype === 'Select'"
@@ -560,6 +587,15 @@
                         type="select"
                         :options="selectOptions(f)"
                         :placeholder="f.placeholder || __('Select an option')"
+                        :disabled="fieldReadOnly(f)"
+                      />
+                      <FormControl
+                        v-else-if="f.fieldtype === 'Link'"
+                        v-model="previewModel[f.fieldname]"
+                        type="select"
+                        :options="linkSelectOptions(f)"
+                        :placeholder="f.placeholder || __('Select an option')"
+                        :disabled="fieldReadOnly(f)"
                       />
                       <div
                         v-else-if="f.fieldtype === 'Check'"
@@ -568,10 +604,11 @@
                         <FormControl
                           v-model="previewModel[f.fieldname]"
                           type="checkbox"
+                          :disabled="fieldReadOnly(f)"
                         />
                         <span class="text-sm text-ink-gray-5"
                           >{{ f.label
-                          }}<span v-if="f.reqd" class="text-ink-red-5"
+                          }}<span v-if="fieldRequired(f)" class="text-ink-red-5"
                             >*</span
                           ></span
                         >
@@ -581,6 +618,7 @@
                         v-model="previewModel[f.fieldname]"
                         :type="inputType(f)"
                         :placeholder="f.placeholder"
+                        :disabled="fieldReadOnly(f)"
                       />
                       <div
                         v-if="f.field_description"
@@ -622,6 +660,7 @@ import {
   Badge,
   Button,
   Switch,
+  Combobox,
   Tabs,
   TextInput,
   FormControl,
@@ -631,9 +670,9 @@ import {
   toast,
   createResource,
 } from 'frappe-ui'
-import Autocomplete from '@/components/frappe-ui/Autocomplete.vue'
 import FieldCard from '@/components/Settings/Forms/FieldCard.vue'
 import { fieldTypeIcon } from '@/components/Settings/Forms/fieldTypeIcon'
+import { evaluateDependsOnValue } from '@/utils/expressions'
 import DragVerticalIcon from '@/components/Icons/DragVerticalIcon.vue'
 import LucideCopy from '~icons/lucide/copy'
 import Draggable from 'vuedraggable'
@@ -646,10 +685,12 @@ import LucideCheck from '~icons/lucide/check'
 import LucideLayoutList from '~icons/lucide/layout-list'
 import LucideSettings from '~icons/lucide/settings'
 import { globalStore } from '@/stores/global'
+import { useTelemetry } from 'frappe-ui/frappe'
 import { copyToClipboard } from '@/utils'
-import { ref, reactive, computed, nextTick } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 
 const { $dialog } = globalStore()
+const { capture } = useTelemetry()
 
 const BREAK_TYPES = ['Section Break', 'Column Break']
 
@@ -665,6 +706,8 @@ const docLabel = (dt) => targetOptions.find((o) => o.value === dt)?.label || dt
 const loaded = ref(false)
 const saving = ref(false)
 const dirty = ref(false)
+
+const savedPublished = ref(false)
 const mode = ref('edit') // edit | preview
 const tabIndex = ref(0)
 const tabs = [
@@ -707,6 +750,18 @@ function autoGrow(el) {
   if (!el) return
   el.style.height = 'auto'
   el.style.height = el.scrollHeight + 'px'
+}
+// Robustly size the description box: measure on an animation frame (after layout),
+// and if the box isn't laid out yet — it lives in a lazily-rendered Tabs panel, so
+// on re-navigation it can be briefly zero-width/hidden — retry on the next frame.
+// Without this, opening a saved multi-line description shows only the first line.
+function sizeDescription(tries = 0) {
+  requestAnimationFrame(() => {
+    const el = descInput.value
+    if (!el) return
+    if (!el.clientWidth && tries < 20) return sizeDescription(tries + 1)
+    autoGrow(el)
+  })
 }
 const dragging = ref(false)
 
@@ -772,6 +827,45 @@ async function ensureLinkOptions(doctype) {
   } catch {
     linkOptions[doctype] = []
   }
+}
+
+// per target doctype: can a guest select it? Drives the Link-field warning in
+// FieldCard. Fail-open on error so a failed check doesn't nag.
+const guestSelect = reactive({})
+const grantingSelect = reactive({})
+async function ensureGuestSelect(doctype) {
+  if (!doctype || doctype in guestSelect) return
+  guestSelect[doctype] = true
+  try {
+    const res = await call('crm.api.form.link_field_guest_access', { doctype })
+    guestSelect[doctype] = !!res?.guest_can_select
+  } catch {
+    guestSelect[doctype] = true
+  }
+}
+// author's explicit, informed choice to expose a doctype's records to guests
+async function grantGuestSelect(doctype) {
+  if (!doctype || grantingSelect[doctype]) return
+  grantingSelect[doctype] = true
+  try {
+    const res = await call('crm.api.form.grant_guest_link_access', { doctype })
+    guestSelect[doctype] = !!res?.guest_can_select
+    if (guestSelect[doctype]) {
+      // records are now guest-visible — refresh the preview dropdown
+      delete linkOptions[doctype]
+      ensureLinkOptions(doctype)
+      toast.success(__('Guests can now select {0} records.', [doctype]))
+    }
+  } catch (e) {
+    toast.error(e?.messages?.[0] || __('Could not grant guest access.'))
+  } finally {
+    grantingSelect[doctype] = false
+  }
+}
+// resolve both the preview options and the guest-access state for a Link target
+function ensureLinkMeta(doctype) {
+  ensureLinkOptions(doctype)
+  ensureGuestSelect(doctype)
 }
 
 function newColumn(colField = null) {
@@ -849,6 +943,14 @@ function onSortEnd() {
 const sectionKey = (sec) => sec.secField?.fieldname || 'sec'
 const columnKey = (col) => col.colField?.fieldname || 'col0'
 const previewModel = reactive({}) // throwaway values so the preview is interactive
+
+// preview honours the same conditional-logic rules, reusing the app's evaluator
+const evalRule = (expr, fallback) =>
+  expr ? evaluateDependsOnValue(expr, previewModel) : fallback
+const fieldVisible = (f) => evalRule(f.depends_on, true)
+const fieldRequired = (f) =>
+  f.reqd ? true : evalRule(f.mandatory_depends_on, false)
+const fieldReadOnly = (f) => evalRule(f.read_only_depends_on, false)
 const previewSubmitted = ref(false)
 
 function resetPreview() {
@@ -869,6 +971,16 @@ const form = reactive({
   published: 0,
   fields: [],
 })
+
+// Keep the description box sized to its text. flush:'post' runs after the DOM
+// settles, so it fires whenever the textarea actually mounts (initial load, or
+// re-entering Edit — it lives inside a lazily-rendered Tabs panel) or its content
+// changes — no more 1-row box scrolled to the last line.
+watch([descInput, () => form.description], () => sizeDescription(), {
+  flush: 'post',
+})
+// re-measure once web fonts load: scrollHeight with the fallback font wraps wrong
+onMounted(() => document.fonts?.ready?.then(() => sizeDescription()))
 
 const publicUrl = computed(
   () => `${window.location.origin}/crm-form/${form.route}`,
@@ -939,10 +1051,18 @@ function sectionFieldCount(sec) {
   return sec.columns.reduce((n, c) => n + c.items.length, 0)
 }
 
+// opening the Add Field picker collapses any open field editor
+function openFieldPicker(isOpen, setOpen) {
+  if (!isOpen) expanded.value = null
+  setOpen(!isOpen)
+}
+
 // add a field into a specific column, then re-flatten to form.fields
 function addFieldToColumn(col, option) {
   const af = option?.af || option
   if (!af?.fieldname) return
+  // a freshly added field starts collapsed, not stacked under a previously open one
+  expanded.value = null
   // re-adding a field that was moved to hidden brings it back onto the form
   hiddenFields.value = hiddenFields.value.filter(
     (h) => h.fieldname !== af.fieldname,
@@ -955,7 +1075,12 @@ function addFieldToColumn(col, option) {
     reqd: !!af.reqd,
     placeholder: '',
     field_description: '',
+    depends_on: '',
+    mandatory_depends_on: '',
+    read_only_depends_on: '',
   })
+  if (af.fieldtype === 'Link') ensureLinkMeta(af.options)
+  capture('form_field_added', { field_type: af.fieldtype })
   syncFromModel()
 }
 
@@ -1021,6 +1146,16 @@ function optionList(f) {
 }
 function selectOptions(f) {
   const opts = optionList(f).map((o) => ({ label: o, value: o }))
+  return [{ label: __('Select an option'), value: '' }, ...opts]
+}
+// preview dropdown for a Link field — the target doctype's records, fetched lazily
+// into `linkOptions`; mirrors the public form's server-populated <select>.
+function linkSelectOptions(f) {
+  ensureLinkMeta(f.options)
+  const opts = (linkOptions[f.options] || []).map((o) => ({
+    label: o,
+    value: o,
+  }))
   return [{ label: __('Select an option'), value: '' }, ...opts]
 }
 const TEXTAREA_TYPES = [
@@ -1126,6 +1261,7 @@ createResource({
     form.redirect_url = doc.redirect_url || ''
     form.allowed_embedding_domains = doc.allowed_embedding_domains || ''
     form.published = doc.published || 0
+    savedPublished.value = !!form.published
     form.fields = (doc.fields || []).map((f) => ({
       name: f.name,
       fieldname: f.fieldname,
@@ -1135,6 +1271,9 @@ createResource({
       reqd: !!f.reqd,
       placeholder: f.placeholder,
       field_description: f.field_description,
+      depends_on: f.depends_on || '',
+      mandatory_depends_on: f.mandatory_depends_on || '',
+      read_only_depends_on: f.read_only_depends_on || '',
     }))
     hiddenFields.value = (doc.hidden_fields || []).map((h) => ({
       fieldname: h.fieldname,
@@ -1146,12 +1285,15 @@ createResource({
     hiddenFields.value.forEach((h) => {
       if (h.fieldtype === 'Link') ensureLinkOptions(h.options)
     })
+    // resolve guest-access state up front so a Link field can warn on the build tab
+    form.fields.forEach((f) => {
+      if (f.fieldtype === 'Link') ensureLinkMeta(f.options)
+    })
     rebuildModel()
     // only keep auto-syncing the route if it's still an untouched default
     routeEdited.value = !/^untitled-form(-\d+)?$/.test(form.route)
     loaded.value = true
     availableFields.reload()
-    nextTick(() => autoGrow(descInput.value))
   },
 })
 
@@ -1272,6 +1414,7 @@ async function commitDoctype(newDt, valid) {
     if (!c) return
     f.options = c.options
     if (c.reqd) f.reqd = true
+    if (f.fieldtype === 'Link') ensureLinkMeta(f.options)
   })
   // rebuild hidden fields for the new doctype: its system-hidden fields (Status,
   // with the right options + default), plus any hidden fillable-mandatory field
@@ -1349,6 +1492,9 @@ async function save({ silent = false } = {}) {
           reqd: f.reqd ? 1 : 0,
           placeholder: f.placeholder,
           field_description: f.field_description,
+          depends_on: f.depends_on || '',
+          mandatory_depends_on: f.mandatory_depends_on || '',
+          read_only_depends_on: f.read_only_depends_on || '',
         })),
         hidden_fields: hiddenFields.value.map((h) => ({
           fieldname: h.fieldname,
@@ -1363,6 +1509,10 @@ async function save({ silent = false } = {}) {
     ;(doc.fields || []).forEach((df, i) => {
       if (form.fields[i]) form.fields[i].name = df.name
     })
+    if (form.published && !savedPublished.value) {
+      capture('form_published', { source: 'builder' })
+    }
+    savedPublished.value = !!form.published
     dirty.value = false
     emit('saved')
     return true

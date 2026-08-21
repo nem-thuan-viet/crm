@@ -82,7 +82,7 @@
           v-model="search"
           :placeholder="__('Search users')"
           :debounce="200"
-          class="w-1/3"
+          class="w-full"
         >
           <template #prefix>
             <span
@@ -320,7 +320,7 @@ function toggleEnable(currentlyEnabled) {
             fcrmSettings.setValue.submit(
               { enable_sales_hierarchy: 0 },
               {
-                onSuccess: () => toast.success(__('Sales Hierarchy disabled')),
+                onSuccess: () => toast.success(__('Sales hierarchy disabled')),
               },
             )
             close()
@@ -331,7 +331,11 @@ function toggleEnable(currentlyEnabled) {
   } else {
     fcrmSettings.setValue.submit(
       { enable_sales_hierarchy: 1 },
-      { onSuccess: () => toast.success(__('Sales Hierarchy enabled')) },
+      {
+        onSuccess: () => {
+          toast.success(__('Sales hierarchy enabled'))
+        },
+      },
     )
   }
 }
