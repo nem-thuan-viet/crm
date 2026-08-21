@@ -176,13 +176,42 @@ def get_permlevel_access(permission_type="write", doctype=None, parent_doctype=N
 	return allowed_permlevels
 
 
-def get_field_obj(field):
-	field["placeholder"] = field.get("placeholder") or "Add " + field.label + "..."
+# Tên riêng / tên nền tảng: giữ nguyên chữ hoa khi nhãn nằm giữa câu.
+NHAN_TEN_RIENG = {
+	"Facebook", "LinkedIn", "Twitter", "Instagram", "Messenger", "WhatsApp",
+	"Zalo", "Pancake", "Google", "Microsoft", "TikTok", "Shopee", "ERPNext",
+}
 
-	if field.fieldtype == "Link":
-		field["placeholder"] = field.get("placeholder") or "Select " + field.label + "..."
-	elif field.fieldtype == "Select" and field.options:
-		field["placeholder"] = field.get("placeholder") or "Select " + field.label + "..."
+
+def nhan_trong_cau(nhan):
+	"""Hạ chữ đầu của nhãn để nó đọc tự nhiên khi nằm giữa câu.
+
+	Tiếng Việt không viết hoa danh từ giữa câu: "Chọn ngành...", không phải
+	"Chọn Ngành...". Nhưng KHÔNG hạ khi từ đầu là tên riêng (Facebook, Pancake)
+	hay viết tắt toàn hoa (SLA, ID) — hạ thì thành "Nhập facebook...", sai tên.
+	"""
+	if not nhan:
+		return nhan
+	tu_dau = nhan.split(" ")[0]
+	if tu_dau in NHAN_TEN_RIENG or tu_dau.isupper():
+		return nhan
+	return nhan[0].lower() + nhan[1:]
+
+def get_field_obj(field):
+	# NTV 08/08/2026: bản gốc ghép cứng "Add " + label -> nhãn tiếng Việt bị dán tiền
+	# tố tiếng Anh ("Add Loại đối tác..."), lẫn hai thứ tiếng ngay trên một dòng.
+	# Dùng _() với {0} để cả tiền tố lẫn nhãn đều dịch được qua vi.po.
+	# Xét fieldtype TRƯỚC rồi mới về mặc định. Bản gốc gán "Add ..." ngay dòng đầu,
+	# nên hai nhánh Link/Select bên dưới (`... or ...`) không bao giờ chạy — ô chọn
+	# cũng bị gán "Add" thay vì "Select". Đây là bug của bản gốc, không phải của mình.
+	if not field.get("placeholder"):
+		# Ngày/giờ cũng là CHỌN (bấm lịch), không phải gõ tay
+		if field.fieldtype in ("Link", "Select", "Date", "Datetime", "Time"):
+			field["placeholder"] = _("Select {0}...").format(nhan_trong_cau(_(field.label)))
+		else:
+			field["placeholder"] = _("Add {0}...").format(nhan_trong_cau(_(field.label)))
+
+	if field.fieldtype == "Select" and field.options:
 		field["options"] = [{"label": option, "value": option} for option in field.options.split("\n")]
 
 	if field.read_only:

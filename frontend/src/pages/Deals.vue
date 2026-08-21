@@ -76,6 +76,7 @@
             [
               'modified',
               'creation',
+              '_user_tags',
               'first_response_time',
               'first_responded_on',
               'response_by',
@@ -137,6 +138,7 @@
             [
               'modified',
               'creation',
+              '_user_tags',
               'first_response_time',
               'first_responded_on',
               'response_by',
@@ -387,6 +389,9 @@ function parseRows(rows, columns = []) {
 
   return rows.map((deal) => {
     let _rows = {}
+    _rows.creation = deal.creation
+    _rows._user_tags = deal._user_tags
+    _rows.modified = deal.modified
     deals.value.data.rows.forEach((row) => {
       _rows[row] = deal[row]
 
