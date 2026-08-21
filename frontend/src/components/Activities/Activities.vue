@@ -744,7 +744,8 @@ const emptyText = computed(() => {
   } else if (title.value == 'WhatsApp') {
     text = 'No WhatsApp Messages Found'
   }
-  return text
+  // Bọc __() để tiêu đề trạng thái rỗng dịch được sang tiếng Việt (bản gốc trả chuỗi thô)
+  return __(text)
 })
 
 const emptyTextDescription = computed(() => {
@@ -770,7 +771,8 @@ const emptyTextDescription = computed(() => {
   } else if (title.value == 'WhatsApp') {
     description = 'Start a conversation now!'
   }
-  return description
+  // Bọc __() để mô tả trạng thái rỗng dịch được sang tiếng Việt
+  return __(description)
 })
 
 const emptyTextIcon = computed(() => {

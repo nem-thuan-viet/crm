@@ -105,8 +105,8 @@
                         <PrimaryDropdown
                           v-else-if="field.fieldtype === 'Dropdown'"
                           :value="doc[field.fieldname]"
-                          :placeholder="field.placeholder"
-                          :itemPlaceholder="field.itemPlaceholder"
+                          :placeholder="__(field.placeholder)"
+                          :itemPlaceholder="__(field.itemPlaceholder)"
                           :options="field.options"
                           :validate="field.validate"
                           :onCreate="field.onCreate"
@@ -131,7 +131,7 @@
                           class="form-control"
                           variant="ghost"
                           :modelValue="doc[field.fieldname]"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           @change.stop="fieldChange($event.target.value, field)"
                         />
                         <Select
@@ -140,7 +140,7 @@
                           variant="ghost"
                           :modelValue="doc[field.fieldname]"
                           :options="field.options"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           @update:modelValue="(v) => fieldChange(v, field)"
                         />
                         <Link
@@ -192,7 +192,7 @@
                               : doc[field.options]
                           "
                           :filters="field.filters"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           :onCreate="field.create"
                           @change="(v) => fieldChange(v, field)"
                         />
@@ -203,7 +203,7 @@
                           <TimePicker
                             :value="doc[field.fieldname]"
                             :format="getFormat('', '', false, true, false)"
-                            :placeholder="field.placeholder"
+                            :placeholder="__(field.placeholder)"
                             @change="(v) => fieldChange(v, field)"
                           />
                         </div>
@@ -214,7 +214,7 @@
                           <DateTimePicker
                             :value="doc[field.fieldname]"
                             :format="getFormat('', '', true, true, false)"
-                            :placeholder="field.placeholder"
+                            :placeholder="__(field.placeholder)"
                             placement="left-start"
                             @change="(v) => fieldChange(v, field)"
                           />
@@ -226,7 +226,7 @@
                           <DatePicker
                             :value="doc[field.fieldname]"
                             :format="getFormat('', '', true, false, false)"
-                            :placeholder="field.placeholder"
+                            :placeholder="__(field.placeholder)"
                             placement="left-start"
                             @change="(v) => fieldChange(v, field)"
                           />
@@ -237,7 +237,7 @@
                           type="text"
                           variant="ghost"
                           :value="getFormattedPercent(field.fieldname, doc)"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           :debounce="500"
                           :disabled="Boolean(field.read_only)"
                           @change.stop="
@@ -249,7 +249,7 @@
                           class="form-control"
                           variant="ghost"
                           :modelValue="doc[field.fieldname]"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           :disabled="Boolean(field.read_only)"
                           @change.stop="fieldChange($event.target.value, field)"
                         />
@@ -259,7 +259,7 @@
                           type="text"
                           variant="ghost"
                           :value="doc[field.fieldname] || '0'"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           :debounce="500"
                           :disabled="Boolean(field.read_only)"
                           @change.stop="fieldChange($event.target.value, field)"
@@ -270,7 +270,7 @@
                           type="text"
                           variant="ghost"
                           :value="getFormattedFloat(field.fieldname, doc)"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           :debounce="500"
                           :disabled="Boolean(field.read_only)"
                           @change.stop="
@@ -283,7 +283,7 @@
                           type="text"
                           variant="ghost"
                           :value="getFormattedCurrency(field.fieldname, doc)"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           :debounce="500"
                           :disabled="Boolean(field.read_only)"
                           @change.stop="
@@ -295,7 +295,7 @@
                           class="form-control"
                           variant="ghost"
                           :modelValue="doc[field.fieldname]"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           :disabled="Boolean(field.read_only)"
                           @update:modelValue="(v) => fieldChange(v, field)"
                         />
@@ -358,7 +358,7 @@
                           :bubble-menu="true"
                           editorClass="w-full !min-h-[38px] !h-[38px] ml-1"
                           :value="doc[field.fieldname]"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           :disabled="Boolean(field.read_only)"
                           @change="(v) => fieldChange(v, field)"
                         />
@@ -368,7 +368,7 @@
                           type="text"
                           variant="ghost"
                           :modelValue="doc[field.fieldname]"
-                          :placeholder="field.placeholder"
+                          :placeholder="__(field.placeholder)"
                           @change.stop="fieldChange($event.target.value, field)"
                         />
                       </div>

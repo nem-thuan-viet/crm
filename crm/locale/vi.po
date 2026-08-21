@@ -1464,11 +1464,11 @@ msgstr "Chọn Hiện Có"
 
 #: frontend/src/components/Modals/DealModal.vue:44
 msgid "Choose Existing Contact"
-msgstr "Chọn Liên Hệ Hiện Có"
+msgstr "Chọn liên hệ có sẵn"
 
 #: frontend/src/components/Modals/DealModal.vue:37
 msgid "Choose Existing Organization"
-msgstr "Chọn Tổ Chức Hiện Có"
+msgstr "Chọn khách hàng có sẵn"
 
 #: frontend/src/components/Settings/Sla/SlaPolicyView.vue:171
 msgid "Choose how long this SLA policy will be active."
@@ -1550,7 +1550,7 @@ msgstr ""
 #. Label of the closed_date (Date) field in DocType 'CRM Deal'
 #: crm/fcrm/doctype/crm_deal/crm_deal.json
 msgid "Closed Date"
-msgstr "Ngày Đóng"
+msgstr "Ngày đóng"
 
 #: frontend/src/pages/PersonaForm.vue:100
 msgid "Collaborating with my team"
@@ -1899,7 +1899,7 @@ msgstr "Tạo"
 
 #: frontend/src/components/Modals/DealModal.vue:8
 msgid "Create Deal"
-msgstr "Tạo Deal"
+msgstr "Tạo thương vụ"
 
 #: frontend/src/components/Calendar/CalendarEventPanel.vue:514
 #: frontend/src/pages/Calendar.vue:7
@@ -2115,7 +2115,7 @@ msgstr "Ngày"
 #: frontend/src/components/Telephony/ExotelCallUI.vue:200
 #: frontend/src/pages/Tasks.vue:132
 msgid "Deal"
-msgstr "Deal"
+msgstr "Thương vụ"
 
 #. Label of the deal_owner (Link) field in DocType 'CRM Deal'
 #: crm/fcrm/doctype/crm_deal/crm_deal.json frontend/src/pages/Contact.vue:541
@@ -2123,7 +2123,7 @@ msgstr "Deal"
 #: frontend/src/pages/MobileOrganization.vue:483
 #: frontend/src/pages/Organization.vue:513
 msgid "Deal Owner"
-msgstr "Chủ giao dịch"
+msgstr "Người phụ trách"
 
 #. Label of the deal_status (Link) field in DocType 'ERPNext CRM Settings'
 #: crm/fcrm/doctype/erpnext_crm_settings/erpnext_crm_settings.json
@@ -2139,7 +2139,7 @@ msgstr "Trạng thái Deal"
 #. Label of the deal_value (Currency) field in DocType 'CRM Deal'
 #: crm/fcrm/doctype/crm_deal/crm_deal.json
 msgid "Deal Value"
-msgstr "Giá trị Deal"
+msgstr "Giá trị thương vụ"
 
 #: crm/api/dashboard.py:1023
 msgid "Deal generation channel analysis"
@@ -2151,7 +2151,7 @@ msgstr ""
 
 #: crm/api/dashboard.py:1078 crm/api/dashboard.py:1141
 msgid "Deal value"
-msgstr "Giá trị Deal"
+msgstr "Giá trị thương vụ"
 
 #. Label of a shortcut in the Frappe CRM Workspace
 #: crm/fcrm/workspace/frappe_crm/frappe_crm.json
@@ -3502,11 +3502,11 @@ msgstr "Hoàn thành"
 #: frontend/src/components/SortBy.vue:102
 #: frontend/src/components/SortBy.vue:136
 msgid "First Name"
-msgstr "Họ Tên"
+msgstr "Tên"
 
 #: frontend/src/components/Modals/LeadModal.vue:129
 msgid "First Name is mandatory"
-msgstr "Họ tên là bắt buộc"
+msgstr "Tên là bắt buộc"
 
 #. Label of the first_responded_on (Datetime) field in DocType 'CRM Deal'
 #. Label of the first_responded_on (Datetime) field in DocType 'CRM Lead'
@@ -3540,7 +3540,7 @@ msgstr "Thời gian phản hồi đầu tiên"
 #. Label of the first_name (Data) field in DocType 'CRM Deal'
 #: crm/fcrm/doctype/crm_deal/crm_deal.json
 msgid "First name"
-msgstr "Họ tên"
+msgstr "Tên"
 
 #: frontend/src/components/Settings/DefaultsSettings.vue:92
 msgid "Float Precision"
@@ -4418,7 +4418,7 @@ msgstr "Tên khách hàng tiềm năng"
 #. Label of the lead_owner (Link) field in DocType 'CRM Lead'
 #: crm/fcrm/doctype/crm_lead/crm_lead.json
 msgid "Lead Owner"
-msgstr "Chủ sở hữu khách hàng tiềm năng"
+msgstr "Người phụ trách"
 
 #: crm/fcrm/doctype/crm_lead/crm_lead.py:142
 msgid "Lead Owner cannot be same as the Lead Email Address"
@@ -6643,7 +6643,7 @@ msgstr "Nhân viên kinh doanh"
 #: crm/fcrm/doctype/crm_deal/crm_deal.json
 #: crm/fcrm/doctype/crm_lead/crm_lead.json
 msgid "Salutation"
-msgstr "Lời chào"
+msgstr "Danh xưng"
 
 #. Option for the 'Weekly Off' (Select) field in DocType 'CRM Holiday List'
 #. Option for the 'Workday' (Select) field in DocType 'CRM Service Day'
@@ -6891,7 +6891,7 @@ msgstr "Đặt Mức ưu tiên Mặc định"
 
 #: frontend/src/pages/Lead.vue:119
 msgid "Set First Name"
-msgstr "Đặt Họ Tên"
+msgstr "Đặt tên"
 
 #: frontend/src/components/Controls/GeolocationControl.vue:50
 msgid "Set Location"
@@ -7468,7 +7468,7 @@ msgstr "Các Lãnh thổ"
 #: crm/fcrm/doctype/crm_lead/crm_lead.json
 #: crm/fcrm/doctype/crm_organization/crm_organization.json
 msgid "Territory"
-msgstr "Lãnh thổ"
+msgstr "Khu vực"
 
 #. Label of the territory_manager (Link) field in DocType 'CRM Territory'
 #: crm/fcrm/doctype/crm_territory/crm_territory.json
@@ -8926,3 +8926,134 @@ msgstr "⚠️ Không tìm thấy dữ liệu cho trường cha: {0}"
 msgid "⚠️ No row found for idx: {0} in parent field: {1}"
 msgstr "⚠️ Không tìm thấy hàng cho idx: {0} trong trường cha: {1}"
 
+# --- NTV: bổ sung 08/08/2026, các chuỗi mới hơn bản dịch gốc ---
+msgid "Enrich"
+msgstr "Làm giàu dữ liệu"
+
+msgid "Enriching…"
+msgstr "Đang làm giàu dữ liệu…"
+
+msgid "Enrich from website"
+msgstr "Làm giàu dữ liệu từ website"
+
+msgid "View Customer"
+msgstr "Xem khách hàng"
+
+msgid "Add Company Description..."
+msgstr "Nhập mô tả công ty..."
+
+msgid "Add Industry..."
+msgstr "Chọn ngành..."
+
+msgid "Add Website..."
+msgstr "Nhập website..."
+
+msgid "Add Territory..."
+msgstr "Chọn khu vực..."
+
+msgid "Add Next Step..."
+msgstr "Nhập bước tiếp theo..."
+
+msgid "No Activities Found"
+msgstr "Chưa có hoạt động"
+
+msgid "No Emails Found"
+msgstr "Chưa có email"
+
+msgid "No Comments Found"
+msgstr "Chưa có bình luận"
+
+msgid "No Data Fields Added Yet"
+msgstr "Chưa có trường dữ liệu"
+
+msgid "No Call History"
+msgstr "Chưa có cuộc gọi"
+
+msgid "No Notes Found"
+msgstr "Chưa có ghi chú"
+
+msgid "No Tasks Found"
+msgstr "Chưa có nhiệm vụ"
+
+msgid "No Attachments Found"
+msgstr "Chưa có tệp đính kèm"
+
+msgid "No WhatsApp Messages Found"
+msgstr "Chưa có tin nhắn WhatsApp"
+
+msgid "There are no activities to display here. Go ahead and make some changes."
+msgstr "Mọi thay đổi trên cơ hội này sẽ được ghi lại ở đây."
+
+msgid "No emails found in your inbox. New messages will appear here soon."
+msgstr "Email trao đổi với khách hàng sẽ hiển thị ở đây."
+
+msgid "Be the first to add one."
+msgstr "Thêm bình luận đầu tiên."
+
+msgid "No data fields have been added yet."
+msgstr "Chưa có trường dữ liệu nào được thêm."
+
+msgid "No recent calls to display. Log a call or call someone now!"
+msgstr "Lịch sử cuộc gọi với khách hàng sẽ hiển thị ở đây."
+
+msgid "Nothing here for now. Add a note to keep track of things."
+msgstr "Ghi chú nội bộ về cơ hội này sẽ hiển thị ở đây."
+
+msgid "Nothing to do at the moment. Start organizing by adding one here."
+msgstr "Nhiệm vụ cần làm cho cơ hội này sẽ hiển thị ở đây."
+
+# --- NTV: placeholder cột phải, bổ sung 08/08/2026 ---
+msgid "Add Annual Revenue..."
+msgstr "Nhập doanh thu hàng năm..."
+
+msgid "Add Closed Date..."
+msgstr "Chọn ngày đóng..."
+
+msgid "Add Probability..."
+msgstr "Nhập xác suất..."
+
+msgid "Add Deal Value..."
+msgstr "Nhập giá trị cơ hội..."
+
+msgid "Add Email..."
+msgstr "Nhập email..."
+
+msgid "Add Mobile No..."
+msgstr "Nhập số di động..."
+
+msgid "Add Phone..."
+msgstr "Nhập số điện thoại..."
+
+msgid "Add No of Employees..."
+msgstr "Chọn số nhân viên..."
+
+msgid "Add Source..."
+msgstr "Chọn nguồn..."
+
+msgid "Add Status..."
+msgstr "Chọn trạng thái..."
+
+msgid "Add Salutation..."
+msgstr "Chọn danh xưng..."
+
+msgid "Add First Name..."
+msgstr "Nhập tên..."
+
+msgid "Add Last Name..."
+msgstr "Nhập họ..."
+
+# --- NTV: tiền tố placeholder sinh từ backend, 08/08/2026 ---
+msgid "Add {0}..."
+msgstr "Nhập {0}..."
+
+msgid "Select {0}..."
+msgstr "Chọn {0}..."
+
+msgid "Company Description"
+msgstr "Mô tả công ty"
+
+msgid "No files have been attached yet. Upload files to see them here."
+msgstr "Tệp đính kèm của hồ sơ này sẽ hiển thị ở đây."
+
+msgid "Company description discovered by Domain Enrichment."
+msgstr "Mô tả công ty do hệ thống tự tìm từ tên miền."
