@@ -507,6 +507,28 @@ def get_organization_address(organization: str | None = None):
 	}
 
 
+def erpnext_cong_da_mo() -> tuple[bool, str]:
+	"""Cổng phía ERPNext (`CRM Settings`) đã mở cho user đang thao tác chưa.
+
+	`erpnext.crm.frappe_crm_api.create_customer()` gọi `validate_frappe_crm_sync()`, hàm này
+	`frappe.throw` khi công tắc tắt hoặc user không nằm trong `allowed_users`. Vì
+	`create_customer_in_erpnext` chạy trong `on_update` của CRM Deal, cú throw đó cuốn theo
+	cả lượt lưu -> sale KHÔNG lưu nổi deal ở trạng thái Thắng. Đo thật trên nhà thật
+	26/08/2026: PUT lên `CRM-DEAL-2026-00010` trả HTTP 417.
+
+	Hai ô đó `permlevel = 1` nên chỉ System Manager sửa được; sale và cả người cấu hình CRM
+	đều không tự mở được. Vì vậy chỗ này phải KIỂM TRƯỚC rồi bỏ qua, thay vì để ERPNext throw.
+	"""
+	if "erpnext" not in frappe.get_installed_apps():
+		return False, "site không cài ERPNext"
+	cs = frappe.get_cached_doc("CRM Settings")
+	if not cs.enable_frappe_crm_data_synchronization:
+		return False, "CRM Settings.enable_frappe_crm_data_synchronization đang TẮT"
+	if frappe.session.user not in [d.user for d in cs.allowed_users]:
+		return False, "user %s không có trong CRM Settings.allowed_users" % frappe.session.user
+	return True, ""
+
+
 def create_customer_in_erpnext(doc, method):
 	erpnext_crm_settings = frappe.get_single("ERPNext CRM Settings")
 	if (
@@ -514,6 +536,15 @@ def create_customer_in_erpnext(doc, method):
 		or not erpnext_crm_settings.create_customer_on_status_change
 		or doc.status != erpnext_crm_settings.deal_status
 	):
+		return
+
+	mo, vi_sao = erpnext_cong_da_mo()
+	if not mo:
+		# Vướng tiền đề, KHÔNG phải lỗi của sale: để deal lưu bình thường, ghi vết cho admin.
+		frappe.log_error(
+			"Deal %s ở trạng thái %s nhưng chưa sinh được Customer: %s" % (doc.name, doc.status, vi_sao),
+			"Cầu CRM->ERPNext chưa mở",
+		)
 		return
 
 	create_customer_from_deal(doc, erpnext_crm_settings)
@@ -533,6 +564,10 @@ def check_customer_for_deal(crm_deal: str):
 	"""Return the ERPNext Customer for the deal and create it if it doesn't exist"""
 	erpnext_crm_settings = frappe.get_single("ERPNext CRM Settings")
 	if not erpnext_crm_settings.enabled or erpnext_crm_settings.is_erpnext_in_different_site:
+		return None
+	# Hook Sales Order chạy ở `before_validate`: throw ở đây là sale không tạo nổi đơn.
+	# Cổng chưa mở thì trả None, sale chọn Customer bằng tay.
+	if not erpnext_cong_da_mo()[0]:
 		return None
 	if not crm_deal or not frappe.db.exists("CRM Deal", crm_deal):
 		return None
