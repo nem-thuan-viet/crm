@@ -80,7 +80,12 @@
     </template>
     <template #actions>
       <div class="flex justify-end">
-        <Button :label="__('Convert')" variant="solid" @click="convertToDeal" />
+        <Button
+          :label="__('Convert')"
+          variant="solid"
+          :loading="dangChuyen"
+          @click="convertToDeal"
+        />
       </div>
     </template>
   </Dialog>
@@ -128,7 +133,21 @@ const { capture } = useTelemetry()
 const { triggerConvertToDeal } = useDocument('CRM Lead', props.lead.name)
 const { document: deal } = useDocument('CRM Deal')
 
+const dangChuyen = ref(false)
+
 async function convertToDeal() {
+  // Chặn cú bấm thứ hai: một lượt convert đi qua nhiều await, người dùng bấm lại trong lúc
+  // chờ là gửi request thứ hai. Server đã có lưới chặn deal trùng, đây là lớp thứ hai cho mắt.
+  if (dangChuyen.value) return
+  dangChuyen.value = true
+  try {
+    await _convertToDeal()
+  } finally {
+    dangChuyen.value = false
+  }
+}
+
+async function _convertToDeal() {
   error.value = ''
 
   if (existingContactChecked.value && !existingContact.value) {

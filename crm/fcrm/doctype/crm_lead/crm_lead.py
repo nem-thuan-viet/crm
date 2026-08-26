@@ -499,6 +499,16 @@ def convert_to_deal(
 		frappe.throw(_("Not allowed to convert Lead to Deal"), frappe.PermissionError)
 
 	lead = frappe.get_cached_doc("CRM Lead", lead)
+
+	# Bấm Convert hai lần thì sinh HAI deal trùng: nút ở ConvertToDealModal.vue không khoá
+	# trong lúc gọi, và hàm này không kiểm gì trước khi tạo. Đo thật trên nhà thật
+	# 27/08/2026: CRM-LEAD-2026-00152 đẻ ra CRM-DEAL-2026-00013 và 00014, hai bản ghi giống
+	# hệt nhau, creation cách nhau 0,5 giây. Lead đã convert rồi thì trả lại deal cũ.
+	if lead.converted:
+		deal_da_co = frappe.db.get_value("CRM Deal", {"lead": lead.name}, "name")
+		if deal_da_co:
+			return deal_da_co
+
 	if frappe.db.exists("CRM Lead Status", "Qualified"):
 		lead.db_set("status", "Qualified")
 	lead.db_set("converted", 1)
